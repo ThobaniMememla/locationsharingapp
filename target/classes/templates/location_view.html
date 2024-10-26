@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Location</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <h1>Your Location</h1>
+    <div id="map" style="height: 400px;"></div>
+
+    <script>
+        const map = L.map('map').setView([0, 0], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Fetch user's location from the server
+        fetch('/get-location/{userId}') // Replace {userId} with the actual user ID
+            .then(response => response.json())
+            .then(data => {
+                const { latitude, longitude } = data;
+                map.setView([latitude, longitude], 13);
+                L.marker([latitude, longitude]).addTo(map)
+                    .bindPopup('User Location')
+                    .openPopup();
+            });
+    </script>
+</body>
+</html>
